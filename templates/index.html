@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Calcul pression de bulle</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: url("https://images.unsplash.com/photo-1581091870627-3c5b5c5c5c5c") no-repeat center center/cover;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+
+        .overlay {
+            background-color: rgba(255, 255, 255, 0.85);
+            min-height: 100vh;
+            padding-top: 30px;
+        }
+
+        .card {
+            border-radius: 20px;
+            padding: 30px;
+        }
+
+        .big-input {
+            height: 60px;
+            font-size: 18px;
+            border-radius: 10px;
+        }
+
+        .custom-btn {
+            background: #8b5e3c;
+            color: white;
+            padding: 10px 25px;
+            border-radius: 10px;
+            border: none;
+            font-size: 18px;
+        }
+
+        .custom-btn:hover {
+            background: #6f4a2f;
+        }
+
+        .header {
+            text-align: center;
+            font-size: 30px;
+            font-weight: bold;
+            color: #5a3e2b;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="overlay">
+
+    <div class="header">
+        Bonjour 👋
+    </div>
+
+    <div class="container mt-4">
+        <div class="card shadow col-md-6 mx-auto">
+
+            <h2 class="text-center mb-4">
+                Calcul de la pression de bulle
+            </h2>
+
+            <form method="POST">
+
+                <div class="mb-3">
+                    <input type="number" step="any" name="x1" class="form-control big-input" placeholder="Entrer x1" required>
+                </div>
+
+                <div class="mb-3">
+                    <input type="number" step="any" name="x2" class="form-control big-input" placeholder="Entrer x2" required>
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="custom-btn">
+                        Calculer
+                    </button>
+                </div>
+
+            </form>
+
+            {% if resultat %}
+            <div class="alert alert-success mt-4 text-center">
+                Résultat : {{ resultat }}
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
