@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Résultats</title>
+</head>
+<body>
+    <h1>Résultats du calcul</h1>
+
+    <p><strong>Température :</strong> {{ temperature }} °C</p>
+    <p><strong>x1 (benzène) :</strong> {{ x1 }}</p>
+    <p><strong>x2 (toluène) :</strong> {{ x2 }}</p>
+    <p><strong>Psat1 :</strong> {{ psat1 }}</p>
+    <p><strong>Psat2 :</strong> {{ psat2 }}</p>
+
+    <hr>
+
+    <p><strong>Pression de bulle :</strong> {{ "%.3f"|format(pbulle) }}</p>
+    <p><strong>y1 (benzène) :</strong> {{ "%.3f"|format(y1) }}</p>
+    <p><strong>y2 (toluène) :</strong> {{ "%.3f"|format(y2) }}</p>
+    <p><strong>Somme y1 + y2 :</strong> {{ "%.3f"|format(somme) }}</p>
+
+    {% if somme > 0.999 and somme < 1.001 %}
+        <p style="color:green;"><strong>Vérification réussie : Σyi = 1</strong></p>
+    {% else %}
+        <p style="color:red;"><strong>Erreur : Σyi ≠ 1</strong></p>
+    {% endif %}
+
+    <br>
+    <a href="/">Retour</a>
+</body>
+</html>

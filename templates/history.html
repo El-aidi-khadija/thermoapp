@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Historique</title>
+</head>
+<body>
+    <h1>Historique des calculs</h1>
+
+    <table border="1" cellpadding="10">
+        <tr>
+            <th>ID</th>
+            <th>T (°C)</th>
+            <th>x1</th>
+            <th>x2</th>
+            <th>Psat1</th>
+            <th>Psat2</th>
+            <th>Pbulle</th>
+            <th>y1</th>
+            <th>y2</th>
+        </tr>
+
+        {% for ex in exercises %}
+        <tr>
+            <td>{{ ex.id }}</td>
+            <td>{{ ex.temperature }}</td>
+            <td>{{ ex.x1 }}</td>
+            <td>{{ ex.x2 }}</td>
+            <td>{{ ex.psat1 }}</td>
+            <td>{{ ex.psat2 }}</td>
+            <td>{{ "%.3f"|format(ex.pbulle) }}</td>
+            <td>{{ "%.3f"|format(ex.y1) }}</td>
+            <td>{{ "%.3f"|format(ex.y2) }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <br>
+    <a href="/">Retour à l'accueil</a>
+</body>
+</html>

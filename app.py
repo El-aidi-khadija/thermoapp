@@ -1,67 +1,102 @@
 from flask import Flask, render_template, request
-import sqlite3
+from flask_sqlalchemy import SQLAlchemy
+import os
 
 app = Flask(__name__)
 
-# 🔶 Création de la base de données
-def init_db():
-    conn = sqlite3.connect('database.db')
-    cursor = conn.cursor()
+# Configuration de la base de données SQLite
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-    cursor.execute('''
-    CREATE TABLE IF NOT EXISTS melange (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        x1 REAL,
-        x2 REAL,
-        resultat REAL
-    )
-    ''')
+db = SQLAlchemy(app)
 
-    conn.commit()
-    conn.close()
+# -----------------------------
+# MODELE DE LA BASE DE DONNEES
+# -----------------------------
+class Exercise(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    temperature = db.Column(db.Float, nullable=False)
+    x1 = db.Column(db.Float, nullable=False)
+    x2 = db.Column(db.Float, nullable=False)
+    psat1 = db.Column(db.Float, nullable=False)
+    psat2 = db.Column(db.Float, nullable=False)
+    pbulle = db.Column(db.Float, nullable=False)
+    y1 = db.Column(db.Float, nullable=False)
+    y2 = db.Column(db.Float, nullable=False)
 
-# 🔶 Route principale
+# -----------------------------
+# FONCTION DE CALCUL
+# -----------------------------
+def calculate_bubble_pressure(x1, x2, psat1, psat2):
+    pbulle = x1 * psat1 + x2 * psat2
+    y1 = (x1 * psat1) / pbulle
+    y2 = (x2 * psat2) / pbulle
+    return pbulle, y1, y2
+
+# -----------------------------
+# PAGE PRINCIPALE
+# -----------------------------
 @app.route("/", methods=["GET", "POST"])
 def index():
-    resultat = None
-
     if request.method == "POST":
-        try:
-            x1 = float(request.form["x1"])
-            x2 = float(request.form["x2"])
+        temperature = float(request.form["temperature"])
+        x1 = float(request.form["x1"])
+        x2 = float(request.form["x2"])
+        psat1 = float(request.form["psat1"])
+        psat2 = float(request.form["psat2"])
 
-            # 🔥 Données de l'exercice
-            P1 = 101.3
-            P2 = 40
+        # Vérification simple
+        if round(x1 + x2, 3) != 1.0:
+            return "Erreur : x1 + x2 doit être égal à 1"
 
-            # 🔥 Calcul pression de bulle
-            resultat = x1 * P1 + x2 * P2
+        pbulle, y1, y2 = calculate_bubble_pressure(x1, x2, psat1, psat2)
 
-            # 🔶 Enregistrer dans la base
-            conn = sqlite3.connect('database.db')
-            cursor = conn.cursor()
+        # Enregistrement dans la base de données
+        new_exercise = Exercise(
+            temperature=temperature,
+            x1=x1,
+            x2=x2,
+            psat1=psat1,
+            psat2=psat2,
+            pbulle=pbulle,
+            y1=y1,
+            y2=y2
+        )
+        db.session.add(new_exercise)
+        db.session.commit()
 
-            cursor.execute(
-                "INSERT INTO melange (x1, x2, resultat) VALUES (?, ?, ?)",
-                (x1, x2, resultat)
-            )
+        return render_template(
+            "result.html",
+            temperature=temperature,
+            x1=x1,
+            x2=x2,
+            psat1=psat1,
+            psat2=psat2,
+            pbulle=pbulle,
+            y1=y1,
+            y2=y2,
+            somme=y1 + y2
+        )
 
-            conn.commit()
-            conn.close()
+    return render_template("index.html")
 
-        except:
-            resultat = "Erreur dans les valeurs"
+# -----------------------------
+# PAGE HISTORIQUE
+# -----------------------------
+@app.route("/history")
+def history():
+    exercises = Exercise.query.all()
+    return render_template("history.html", exercises=exercises)
 
-    return render_template("index.html", resultat=resultat)
+# -----------------------------
+# CREATION DE LA BASE
+# -----------------------------
+with app.app_context():
+    db.create_all()
 
-# 🔶 Lancement
+# -----------------------------
+# LANCEMENT APP
+# -----------------------------
 if __name__ == "__main__":
-    init_db()  # ⚠️ crée la table automatiquement
-    app.run(debug=True)
-import os
-
-import os
-
-if __name__ == "__main__":
-    init_db()
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=True)
