@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de Bord</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header class="navbar">
+    <div class="logo">Thermo<span>Secure</span></div>
+    <nav>
+        <a href="/dashboard">Calcul</a>
+        <a href="/history">Historique</a>
+        <a href="/security">Sécurité</a>
+        <a href="/logout">Déconnexion</a>
+    </nav>
+</header>
+
+<section class="form-section">
+    <h2>Bienvenue, {{ session.username }}</h2>
+    <p class="subtext">
+        Étude thermodynamique du système binaire benzène / toluène
+    </p>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" class="distill-form">
+        <input type="number" step="any" name="benzene" placeholder="Fraction molaire liquide du benzène (x1)" required>
+        <input type="number" step="any" name="toluene" placeholder="Fraction molaire liquide du toluène (x2)" required>
+        <input type="number" step="any" name="temperature" placeholder="Température du système (°C)" required>
+        <input type="number" step="any" name="pressure" placeholder="Pression du système (atm)" required>
+        <button type="submit" class="btn-primary">Calculer</button>
+    </form>
+</section>
+
+<section class="results">
+    <h2>Résultats</h2>
+
+    {% if result %}
+    <div class="result-grid">
+        <div class="result-card">
+            <h3>Composition de la phase liquide</h3>
+            <p><strong>x₁ (Benzène) :</strong> {{ result.x_benzene }}</p>
+            <p><strong>x₂ (Toluène) :</strong> {{ result.x_toluene }}</p>
+        </div>
+
+        <div class="result-card">
+            <h3>Conditions thermodynamiques</h3>
+            <p><strong>Température :</strong> {{ result.temperature }} °C</p>
+            <p><strong>Pression :</strong> {{ result.pressure }} atm</p>
+        </div>
+
+        <div class="result-card">
+            <h3>Composition de la phase vapeur</h3>
+            <p><strong>y₁ (Benzène) :</strong> {{ result.y_benzene }}</p>
+            <p><strong>y₂ (Toluène) :</strong> {{ result.y_toluene }}</p>
+        </div>
+
+        <div class="result-card">
+            <h3>Interprétation</h3>
+            <p>Le benzène étant plus volatil, sa fraction molaire dans la phase vapeur est plus élevée.</p>
+        </div>
+    </div>
+    {% else %}
+    <div class="result-box">
+        <p>Les résultats apparaîtront ici après l’exécution du calcul.</p>
+    </div>
+    {% endif %}
+</section>
+
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Sécurité</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header class="navbar">
+    <div class="logo">Thermo<span>Secure</span></div>
+    <nav>
+        <a href="/dashboard">Calcul</a>
+        <a href="/history">Historique</a>
+        <a href="/security">Sécurité</a>
+        <a href="/logout">Déconnexion</a>
+    </nav>
+</header>
+
+<section class="results">
+    <h2>Dashboard de Sécurité</h2>
+
+    <div class="result-grid">
+        <div class="result-card">
+            <h3>Connexions réussies</h3>
+            <p><strong>{{ total_logins }}</strong></p>
+        </div>
+
+        <div class="result-card">
+            <h3>Calculs effectués</h3>
+            <p><strong>{{ total_calculations }}</strong></p>
+        </div>
+
+        <div class="result-card">
+            <h3>Événements échoués</h3>
+            <p><strong>{{ failed_events }}</strong></p>
+        </div>
+    </div>
+
+    <br><br>
+
+    <div class="history-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Utilisateur</th>
+                    <th>Action</th>
+                    <th>IP</th>
+                    <th>URL</th>
+                    <th>Statut</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                <tr>
+                    <td>{{ log[0] if log[0] else "N/A" }}</td>
+                    <td>{{ log[1] }}</td>
+                    <td>{{ log[2] }}</td>
+                    <td>{{ log[3] }}</td>
+                    <td>{{ log[4] }}</td>
+                    <td>{{ log[5] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+
+</body>
+</html>

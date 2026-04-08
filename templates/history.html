@@ -2,40 +2,60 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Historique</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h1>Historique des calculs</h1>
 
-    <table border="1" cellpadding="10">
-        <tr>
-            <th>ID</th>
-            <th>T (°C)</th>
-            <th>x1</th>
-            <th>x2</th>
-            <th>Psat1</th>
-            <th>Psat2</th>
-            <th>Pbulle</th>
-            <th>y1</th>
-            <th>y2</th>
-        </tr>
+<header class="navbar">
+    <div class="logo">Thermo<span>Secure</span></div>
+    <nav>
+        <a href="/dashboard">Calcul</a>
+        <a href="/history">Historique</a>
+        <a href="/security">Sécurité</a>
+        <a href="/logout">Déconnexion</a>
+    </nav>
+</header>
 
-        {% for ex in exercises %}
-        <tr>
-            <td>{{ ex.id }}</td>
-            <td>{{ ex.temperature }}</td>
-            <td>{{ ex.x1 }}</td>
-            <td>{{ ex.x2 }}</td>
-            <td>{{ ex.psat1 }}</td>
-            <td>{{ ex.psat2 }}</td>
-            <td>{{ "%.3f"|format(ex.pbulle) }}</td>
-            <td>{{ "%.3f"|format(ex.y1) }}</td>
-            <td>{{ "%.3f"|format(ex.y2) }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+<section class="results">
+    <h2>Historique des calculs</h2>
 
-    <br>
-    <a href="/">Retour à l'accueil</a>
+    {% if calculations %}
+    <div class="history-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>x₁ Benzène</th>
+                    <th>x₂ Toluène</th>
+                    <th>T (°C)</th>
+                    <th>P (atm)</th>
+                    <th>y₁ Benzène</th>
+                    <th>y₂ Toluène</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for calc in calculations %}
+                <tr>
+                    <td>{{ calc[0] }}</td>
+                    <td>{{ calc[1] }}</td>
+                    <td>{{ calc[2] }}</td>
+                    <td>{{ calc[3] }}</td>
+                    <td>{{ calc[4] }}</td>
+                    <td>{{ calc[5] }}</td>
+                    <td>{{ calc[6] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="result-box">
+        <p>Aucun calcul enregistré pour le moment.</p>
+    </div>
+    {% endif %}
+</section>
+
 </body>
 </html>

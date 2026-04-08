@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Calcul</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="navbar">
+    <h2>ThermoPro</h2>
+    <div>
+        <a href="/home">Accueil</a>
+        <a href="/calcul">Calcul</a>
+        <a href="/contact">Contact</a>
+        <a href="/logout">Logout</a>
+    </div>
+</div>
+
+<div class="container">
+
+<h1>Calcul de pression de bulle</h1>
+
+<form method="POST">
+    <input type="text" name="x1" placeholder="Fraction molaire x1">
+    <input type="text" name="P1" placeholder="Pression P1">
+    <input type="text" name="P2" placeholder="Pression P2">
+    <button type="submit">Calculer</button>
+</form>
+
+{% if result %}
+<div class="result">
+    Résultat : {{ result }} kPa
+</div>
+{% endif %}
+
+{% if error %}
+<div class="error">
+    {{ error }}
+</div>
+{% endif %}
+
+</div>
+
+</body>
+</html>
